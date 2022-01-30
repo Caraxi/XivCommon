@@ -58,12 +58,7 @@ namespace XivCommon {
         /// </summary>
         ChatBubbles = 1 << 5,
 
-        /// <summary>
-        /// The context menu hooks.
-        ///
-        /// This hook is used in order to enable context menu functions.
-        /// </summary>
-        ContextMenu = 1 << 6,
+        // 1 << 6 used to be ContextMenu
 
         /// <summary>
         /// The name plate hooks.

@@ -1,13 +1,11 @@
 ﻿using System;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.PartyFinder;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using XivCommon.Functions;
-using XivCommon.Functions.ContextMenu;
 using XivCommon.Functions.FriendList;
 using XivCommon.Functions.Housing;
 using XivCommon.Functions.NamePlates;
@@ -56,11 +54,6 @@ namespace XivCommon {
         public ChatBubbles ChatBubbles { get; }
 
         /// <summary>
-        /// Context menu functions
-        /// </summary>
-        public ContextMenu ContextMenu { get; }
-
-        /// <summary>
         /// Tooltip events
         /// </summary>
         public Tooltips Tooltips { get; }
@@ -94,7 +87,6 @@ namespace XivCommon {
             this.Framework = Util.GetService<Dalamud.Game.Framework>();
             this.GameGui = Util.GetService<GameGui>();
 
-            var clientState = Util.GetService<ClientState>();
             var objectTable = Util.GetService<ObjectTable>();
             var partyFinderGui = Util.GetService<PartyFinderGui>();
             var scanner = Util.GetService<SigScanner>();
@@ -106,7 +98,6 @@ namespace XivCommon {
             this.Examine = new Examine(scanner);
             this.Talk = new Talk(scanner, hooks.HasFlag(Hooks.Talk));
             this.ChatBubbles = new ChatBubbles(objectTable, scanner, hooks.HasFlag(Hooks.ChatBubbles));
-            this.ContextMenu = new ContextMenu(this, scanner, clientState.ClientLanguage, hooks);
             this.Tooltips = new Tooltips(scanner, this.GameGui, hooks.HasFlag(Hooks.Tooltips));
             this.NamePlates = new NamePlates(this, scanner, hooks.HasFlag(Hooks.NamePlates));
             this.DutyFinder = new DutyFinder(scanner);
@@ -119,7 +110,6 @@ namespace XivCommon {
         public void Dispose() {
             this.NamePlates.Dispose();
             this.Tooltips.Dispose();
-            this.ContextMenu.Dispose();
             this.ChatBubbles.Dispose();
             this.Talk.Dispose();
             this.BattleTalk.Dispose();
