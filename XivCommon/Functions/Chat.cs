@@ -3,6 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 using Dalamud.Game;
+using FFXIVClientStructs.FFXIV.Client.System.Memory;
+using FFXIVClientStructs.FFXIV.Client.System.String;
 using Framework = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework;
 
 namespace XivCommon.Functions {
@@ -12,15 +14,24 @@ namespace XivCommon.Functions {
     public class Chat {
         private static class Signatures {
             internal const string SendChat = "48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9";
+            internal const string SanitiseString = "E8 ?? ?? ?? ?? EB 0A 48 8D 4C 24 ?? E8 ?? ?? ?? ?? 48 8D 8D";
         }
 
         private delegate void ProcessChatBoxDelegate(IntPtr uiModule, IntPtr message, IntPtr unused, byte a4);
 
         private ProcessChatBoxDelegate? ProcessChatBox { get; }
 
+        private readonly unsafe delegate* unmanaged<Utf8String*, int, IntPtr, void> _sanitiseString = null!;
+
         internal Chat(SigScanner scanner) {
             if (scanner.TryScanText(Signatures.SendChat, out var processChatBoxPtr, "chat sending")) {
                 this.ProcessChatBox = Marshal.GetDelegateForFunctionPointer<ProcessChatBoxDelegate>(processChatBoxPtr);
+            }
+
+            unsafe {
+                if (scanner.TryScanText(Signatures.SanitiseString, out var sanitisePtr, "string sanitiser")) {
+                    this._sanitiseString = (delegate* unmanaged<Utf8String*, int, IntPtr, void>) sanitisePtr;
+                }
             }
         }
 
@@ -63,8 +74,8 @@ namespace XivCommon.Functions {
         /// but it is still possible to make mistakes. Use with caution.
         /// </para>
         /// </summary>
-        /// <param name="message"></param>
-        /// <exception cref="ArgumentException">If <paramref name="message"/> is empty or longer than 500 bytes in UTF-8.</exception>
+        /// <param name="message">message to send</param>
+        /// <exception cref="ArgumentException">If <paramref name="message"/> is empty, longer than 500 bytes in UTF-8, or contains invalid characters.</exception>
         /// <exception cref="InvalidOperationException">If the signature for this function could not be found</exception>
         public void SendMessage(string message) {
             var bytes = Encoding.UTF8.GetBytes(message);
@@ -76,7 +87,40 @@ namespace XivCommon.Functions {
                 throw new ArgumentException("message is longer than 500 bytes", nameof(message));
             }
 
+            if (message.Length != this.SanitiseText(message).Length) {
+                throw new ArgumentException("message contained invalid characters", nameof(message));
+            }
+
             this.SendMessageUnsafe(bytes);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sanitises a string by removing any invalid input.
+        /// </para>
+        /// <para>
+        /// The result of this method is safe to use with
+        /// <see cref="SendMessage"/>, provided that it is not empty or too
+        /// long.
+        /// </para>
+        /// </summary>
+        /// <param name="text">text to sanitise</param>
+        /// <returns>sanitised text</returns>
+        /// <exception cref="InvalidOperationException">If the signature for this function could not be found</exception>
+        public unsafe string SanitiseText(string text) {
+            if (this._sanitiseString == null) {
+                throw new InvalidOperationException("Could not find signature for chat sanitisation");
+            }
+
+            var uText = Utf8String.FromString(text);
+
+            this._sanitiseString(uText, 0x27F, IntPtr.Zero);
+            var sanitised = uText->ToString();
+
+            uText->Dtor();
+            IMemorySpace.Free(uText);
+
+            return sanitised;
         }
 
         [StructLayout(LayoutKind.Explicit)]
