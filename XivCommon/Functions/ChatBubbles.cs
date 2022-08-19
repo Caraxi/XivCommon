@@ -64,12 +64,12 @@ namespace XivCommon.Functions {
             }
 
             if (scanner.TryScanText(Signatures.ChatBubbleOpen, out var openPtr, "chat bubbles open")) {
-                this.OpenChatBubbleHook = new Hook<OpenChatBubbleDelegate>(openPtr, this.OpenChatBubbleDetour);
+                this.OpenChatBubbleHook = Hook<OpenChatBubbleDelegate>.FromAddress(openPtr, this.OpenChatBubbleDetour);
                 this.OpenChatBubbleHook.Enable();
             }
 
             if (scanner.TryScanText(Signatures.ChatBubbleUpdate, out var updatePtr, "chat bubbles update")) {
-                this.UpdateChatBubbleHook = new Hook<UpdateChatBubbleDelegate>(updatePtr + 9, this.UpdateChatBubbleDetour);
+                this.UpdateChatBubbleHook = Hook<UpdateChatBubbleDelegate>.FromAddress(updatePtr + 9, this.UpdateChatBubbleDetour);
                 this.UpdateChatBubbleHook.Enable();
             }
         }

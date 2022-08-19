@@ -39,7 +39,7 @@ namespace XivCommon.Functions {
                 this.AddBattleTalk = Marshal.GetDelegateForFunctionPointer<AddBattleTalkDelegate>(addBattleTalkPtr);
 
                 if (this.HookEnabled) {
-                    this.AddBattleTalkHook = new Hook<AddBattleTalkDelegate>(addBattleTalkPtr, this.AddBattleTalkDetour);
+                    this.AddBattleTalkHook = Hook<AddBattleTalkDelegate>.FromAddress(addBattleTalkPtr, this.AddBattleTalkDetour);
                     this.AddBattleTalkHook.Enable();
                 }
             }

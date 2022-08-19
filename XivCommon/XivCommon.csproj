@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5-windows</TargetFramework>
+        <TargetFramework>net6-windows</TargetFramework>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>enable</Nullable>
@@ -14,7 +14,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>XivCommon</Title>
         <Authors>ascclemens</Authors>
-        <RepositoryUrl>https://git.sr.ht/~jkcclemens/XivCommon</RepositoryUrl>
+        <RepositoryUrl>https://git.annaclemens.io/ascclemens/XivCommon</RepositoryUrl>
         <Description>A set of common functions, hooks, and events not included in Dalamud.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
@@ -23,8 +23,8 @@
         <Dalamud>$(AppData)\XIVLauncher\addon\Hooks\dev</Dalamud>
     </PropertyGroup>
 
-    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-        <Dalamud>$(HOME)/games/final-fantasy-xiv-online/drive_c/users/$(USER)/AppData/Roaming/XIVLauncher/addon/Hooks/dev</Dalamud>
+    <PropertyGroup Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'">
+        <Dalamud>$(DALAMUD_HOME)</Dalamud>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(IsCI)' == 'true'">

@@ -54,7 +54,7 @@ namespace XivCommon.Functions {
             }
 
             if (scanner.TryScanText(Signatures.ShowMessageBox, out var showMessageBoxPtr, "Talk")) {
-                this.AddonTalkV45Hook = new Hook<AddonTalkV45Delegate>(showMessageBoxPtr, this.AddonTalkV45Detour);
+                this.AddonTalkV45Hook = Hook<AddonTalkV45Delegate>.FromAddress(showMessageBoxPtr, this.AddonTalkV45Detour);
                 this.AddonTalkV45Hook.Enable();
             }
         }

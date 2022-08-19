@@ -55,7 +55,7 @@ namespace XivCommon.Functions.NamePlates {
 
             if (scanner.TryScanText(Signatures.NamePlateUpdate, out var updatePtr)) {
                 unsafe {
-                    this._namePlateUpdateHook = new Hook<NamePlateUpdateDelegate>(updatePtr, this.NamePlateUpdateDetour);
+                    this._namePlateUpdateHook = Hook<NamePlateUpdateDelegate>.FromAddress(updatePtr, this.NamePlateUpdateDetour);
                 }
 
                 this._namePlateUpdateHook.Enable();

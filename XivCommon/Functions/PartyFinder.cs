@@ -73,13 +73,13 @@ namespace XivCommon.Functions {
                 this.RequestPartyFinderListings = Marshal.GetDelegateForFunctionPointer<RequestPartyFinderListingsDelegate>(requestPfPtr);
 
                 if (this.ListingsEnabled) {
-                    this.RequestPfListingsHook = new Hook<RequestPartyFinderListingsDelegate>(requestPfPtr, this.OnRequestPartyFinderListings);
+                    this.RequestPfListingsHook = Hook<RequestPartyFinderListingsDelegate>.FromAddress(requestPfPtr, this.OnRequestPartyFinderListings);
                     this.RequestPfListingsHook.Enable();
                 }
             }
 
             if (this.JoinsEnabled && scanner.TryScanText(Signatures.JoinCrossParty, out var joinPtr, "Party Finder joins")) {
-                this.JoinPfHook = new Hook<JoinPfDelegate>(joinPtr, this.JoinPfDetour);
+                this.JoinPfHook = Hook<JoinPfDelegate>.FromAddress(joinPtr, this.JoinPfDetour);
                 this.JoinPfHook.Enable();
             }
         }
