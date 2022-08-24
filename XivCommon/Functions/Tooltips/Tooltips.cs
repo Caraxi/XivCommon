@@ -21,7 +21,7 @@ namespace XivCommon.Functions.Tooltips {
 
         internal unsafe delegate void StringArrayDataSetStringDelegate(IntPtr self, int index, byte* str, byte updatePtr, byte copyToUi, byte dontSetModified);
 
-        private unsafe delegate byte ItemUpdateTooltipDelegate(IntPtr agent, int** numberArrayData, byte*** stringArrayData, float a4);
+        private unsafe delegate ulong ItemUpdateTooltipDelegate(IntPtr agent, int** numberArrayData, byte*** stringArrayData, float a4);
 
         private unsafe delegate void ActionUpdateTooltipDelegate(IntPtr agent, int** numberArrayData, byte*** stringArrayData);
 
@@ -99,7 +99,7 @@ namespace XivCommon.Functions.Tooltips {
             this.ItemUpdateTooltipHook?.Dispose();
         }
 
-        private unsafe byte ItemUpdateTooltipDetour(IntPtr agent, int** numberArrayData, byte*** stringArrayData, float a4) {
+        private unsafe ulong ItemUpdateTooltipDetour(IntPtr agent, int** numberArrayData, byte*** stringArrayData, float a4) {
             var ret = this.ItemUpdateTooltipHook!.Original(agent, numberArrayData, stringArrayData, a4);
 
             if (ret > 0) {

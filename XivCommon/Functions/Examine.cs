@@ -10,7 +10,7 @@ namespace XivCommon.Functions {
     /// </summary>
     public class Examine {
         private static class Signatures {
-            internal const string RequestCharacterInfo = "48 89 5C 24 ?? 57 48 83 EC 40 BA ?? ?? ?? ?? 48 8B D9 E8 ?? ?? ?? ?? 48 8B F8 48 85 C0 74 16";
+            internal const string RequestCharacterInfo = "40 53 48 83 EC 40 48 8B D9 48 8B 49 10 48 8B 01 FF 90 ?? ?? ?? ?? BA";
         }
 
         private delegate long RequestCharInfoDelegate(IntPtr ptr);
