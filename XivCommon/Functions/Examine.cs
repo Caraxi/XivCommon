@@ -47,9 +47,10 @@ namespace XivCommon.Functions {
 
             // offsets and stuff come from the beginning of case 0x2c (around line 621 in IDA)
             // if 29f8 ever changes, I'd just scan for it in old binary and find what it is in the new binary at the same spot
-            // 40 55 53 57 41 54 41 55 41 56 48 8D 6C 24 ??
+            // 40 55 53 57 41 54 41 55 41 56 48 8D 6C 24
+            // offset below is 4C 8B B0 ?? ?? ?? ?? 4D 85 F6 0F 84 ?? ?? ?? ?? 0F B6 83
             var agentModule = (IntPtr) Framework.Instance()->GetUiModule()->GetAgentModule();
-            var rciData = Marshal.ReadIntPtr(agentModule + 0x1A0);
+            var rciData = Marshal.ReadIntPtr(agentModule + 0x1A8);
 
             // offsets at sig E8 ?? ?? ?? ?? 33 C0 EB 4C
             // this is called at the end of the 2c case
