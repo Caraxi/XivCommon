@@ -34,7 +34,7 @@ namespace XivCommon.Functions {
         internal unsafe BattleTalk(bool hook) {
             this.HookEnabled = hook;
 
-            var addBattleTalkPtr = (IntPtr) Framework.Instance()->GetUiModule()->VTable->ShowBattleTalk;
+            var addBattleTalkPtr = (IntPtr) Framework.Instance()->GetUiModule()->VFTable->ShowBattleTalk;
             if (addBattleTalkPtr != IntPtr.Zero) {
                 this.AddBattleTalk = Marshal.GetDelegateForFunctionPointer<AddBattleTalkDelegate>(addBattleTalkPtr);
 
