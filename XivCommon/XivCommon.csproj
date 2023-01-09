@@ -20,32 +20,26 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Dalamud>$(AppData)\XIVLauncher\addon\Hooks\dev</Dalamud>
+        <DalamudLibPath>$(APPDATA)\XIVLauncher\addon\Hooks\dev</DalamudLibPath>
     </PropertyGroup>
-
-    <PropertyGroup Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'">
-        <Dalamud>$(DALAMUD_HOME)</Dalamud>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(IsCI)' == 'true'">
-        <Dalamud>$(HOME)/dalamud</Dalamud>
-    </PropertyGroup>
-
+    
     <ItemGroup>
         <Reference Include="Dalamud">
-            <HintPath>$(Dalamud)\Dalamud.dll</HintPath>
+            <HintPath>$(DalamudLibPath)\Dalamud.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="FFXIVClientStructs">
-            <HintPath>$(Dalamud)\FFXIVClientStructs.dll</HintPath>
-            <Private>False</Private>
+            <Private Condition="'$(Configuration)' == 'Debug'">true</Private>
+            <Private Condition="'$(Configuration)' == 'Release'">false</Private>
+            <HintPath Condition="'$(Configuration)' == 'Debug'">$(ProjectDir)\..\..\FFXIVClientStructs\bin\Debug\FFXIVClientStructs.dll</HintPath>
+            <HintPath Condition="'$(Configuration)' == 'Release'">$(DalamudLibPath)\FFXIVClientStructs.dll</HintPath>
         </Reference>
         <Reference Include="Lumina">
-            <HintPath>$(Dalamud)\Lumina.dll</HintPath>
+            <HintPath>$(DalamudLibPath)\Lumina.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="Lumina.Excel">
-            <HintPath>$(Dalamud)\Lumina.Excel.dll</HintPath>
+            <HintPath>$(DalamudLibPath)\Lumina.Excel.dll</HintPath>
             <Private>False</Private>
         </Reference>
     </ItemGroup>
